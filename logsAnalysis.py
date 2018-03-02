@@ -1,7 +1,8 @@
-
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
 import psycopg2
 
-DBNAME = "news"
+DBNAME = 'news'
 
 db = psycopg2.connect(database=DBNAME)
 c = db.cursor()
@@ -13,7 +14,7 @@ c.execute('''   SELECT *
 popularArticles = c.fetchall()
 
 for (articleTitle, totalViews) in popularArticles:
-    print(r'"{}" - {} views'.format(articleTitle, totalViews))
+    print r'"{}" - {} views'.format(articleTitle, totalViews)
 
 c.execute('''   SELECT name, total
                 FROM topAuthors, authors
@@ -21,9 +22,9 @@ c.execute('''   SELECT name, total
                 ''')
 popularAuthors = c.fetchall()
 
-print("\n")
+print '\n'
 for (authorName, totalViews) in popularAuthors:
-    print(r'{} - {} views'.format(authorName, totalViews))
+    print r'{} - {} views'.format(authorName, totalViews)
 
 c.execute('''   SELECT to_char(time, 'Mon DD, YYYY'), percentError
                 FROM percentError
@@ -31,8 +32,8 @@ c.execute('''   SELECT to_char(time, 'Mon DD, YYYY'), percentError
                 ''')
 percentErrors = c.fetchall()
 
-print("\n")
+print '\n'
 for (date, error) in percentErrors:
-    print(r'{} - {} % errors'.format(date, error))
+    print r'{} - {} % errors'.format(date, error)
 
 db.close()
