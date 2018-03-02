@@ -1,0 +1,35 @@
+
+CREATE VIEW topArticles AS
+  SELECT title, COUNT(*) as total
+  FROM log, articles
+  WHERE path != '/' AND (path = CONCAT('/article/',articles.slug))
+  GROUP BY title
+  ORDER BY total DESC;
+
+CREATE VIEW topAuthors AS
+  SELECT author, COUNT(*) as total
+  FROM log, articles
+  WHERE path != '/' AND (path = CONCAT('/article/',articles.slug))
+  GROUP BY author
+  ORDER BY total DESC;
+
+CREATE VIEW logStatus AS
+  SELECT date(time) AS time, COUNT(*) AS logCount
+  FROM log
+  GROUP BY date(time)
+  ORDER BY date(time);
+
+CREATE VIEW notFoundStatus AS
+  SELECT date(time) AS time, COUNT(*) AS notFoundCount
+  FROM log
+  WHERE status = '404 NOT FOUND'
+  GROUP BY date(time)
+  ORDER BY date(time);
+
+CREATE VIEW percentError AS
+  SELECT logStatus.time,
+  ROUND(((CAST(notFoundCount AS numeric) / CAST(logCount AS numeric))*100),2)
+  AS percentError
+  FROM logStatus
+  LEFT JOIN notFoundStatus ON logStatus.time = notFoundStatus.time
+  ORDER BY logStatus.time;
